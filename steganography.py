@@ -75,16 +75,36 @@ def decode(img_encoded, n):
     return mk_img(data, img_encoded.size)
 
 if __name__ == '__main__':
-    img_hide_path = 'images/1.tiff'
-    img_cover_path = 'images/2.tiff'
-    img_encoded_path = 'images/encoded.tiff'
-    img_decoded_path = 'images/decoded.tiff'
     n = 2
 
-    img_hide = Image.open(img_hide_path).convert('RGB')
-    img_cover = Image.open(img_cover_path).convert('RGB')
+    parser = argparse.ArgumentParser(description='Hiding image in another image with most/least significatn bits')
+    parser.add_argument('Mode',
+                        metavar='mode',
+                        type=str,
+                        help='encode or decode image')
+    parser.add_argument('File1',
+                        metavar='file1',
+                        type=str,
+                        help='image to hide if encode or image to decode if decode')
+    parser.add_argument('File2',
+                        metavar='file2',
+                        type=str,
+                        help='cover image if encode or path to decoded image if decode')
 
-    encode(img_hide, img_cover, n).save(img_encoded_path)
+    args = parser.parse_args()
 
-    img_encoded = Image.open(img_encoded_path)
-    decode(img_encoded, n).save(img_decoded_path)
+    if args.Mode == 'encode':
+        img_hide_path = args.File1
+        img_cover_path = args.File2
+
+        img_hide = Image.open(img_hide_path).convert('RGB')
+        img_cover = Image.open(img_cover_path).convert('RGB')
+
+        encode(img_hide, img_cover, n).save('encoded.tiff')
+    
+    if args.Mode == 'decode':
+        img_encoded_path = args.File1
+        img_decoded_path = args.File2
+
+        img_encoded = Image.open(img_encoded_path)
+        decode(img_encoded, n).save(img_decoded_path)
