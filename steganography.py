@@ -1,5 +1,6 @@
-import argparse
+import argparse, requests
 from PIL import Image
+from io import BytesIO
 
 MAX_BIT_VALUE = 8
 MAX_COLOR_VALUE = 256
@@ -81,30 +82,38 @@ if __name__ == '__main__':
     parser.add_argument('Mode',
                         metavar='mode',
                         type=str,
+                        choices=['encode', 'decode'],
                         help='encode or decode image')
-    parser.add_argument('File1',
-                        metavar='file1',
+    parser.add_argument('input',
+                        metavar='input',
                         type=str,
-                        help='image to hide if encode or image to decode if decode')
-    parser.add_argument('File2',
-                        metavar='file2',
+                        help='file to hide or decode')
+    parser.add_argument('-o', '--output',
                         type=str,
-                        help='cover image if encode or path to decoded image if decode')
+                        default='out.tiff',
+                        help='path to output file (must be .tiff)')
+    parser.add_argument('-c', '--cover',
+                        type=str,
+                        help='cover image if encode (default is random image)')
 
     args = parser.parse_args()
 
     if args.Mode == 'encode':
-        img_hide_path = args.File1
-        img_cover_path = args.File2
-
+        img_hide_path = args.input
         img_hide = Image.open(img_hide_path).convert('RGB')
-        img_cover = Image.open(img_cover_path).convert('RGB')
+        img_cover = None
 
-        encode(img_hide, img_cover, n).save('encoded.tiff')
-    
-    if args.Mode == 'decode':
-        img_encoded_path = args.File1
-        img_decoded_path = args.File2
+        if not args.cover:
+            w, h = img_hide.size
+            response = requests.get(f'https://source.unsplash.com/random/{w}x{h}')
+            image_bytes = BytesIO(response.content)
+            img_cover = Image.open(image_bytes).convert('RGB')
+        else:
+            img_cover = Image.open(args.cover).convert('RGB')
+
+        encode(img_hide, img_cover, n).save(args.output)
+    else:
+        img_encoded_path = args.input
 
         img_encoded = Image.open(img_encoded_path)
-        decode(img_encoded, n).save(img_decoded_path)
+        decode(img_encoded, n).save(args.output)
