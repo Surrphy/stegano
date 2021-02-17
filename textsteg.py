@@ -1,4 +1,6 @@
+import requests, argparse
 from PIL import Image
+from io import BytesIO
 
 MAX_BIT_VALUE = 8
 MAX_COLOR_VALUE = 256
@@ -91,13 +93,45 @@ def decode(img, kod, n):
                 return bin_msg
 
 if __name__ == '__main__':
-    img_path = 'images/unnamed.jpg'
-    encoded_path = 'images/encoded.tiff'
-    msg = 'dziobak'
+    # img_path = 'images/unnamed.jpg'
+    # encoded_path = 'images/encoded.tiff'
+    # msg = 'dziobak'
     n = 2
 
-    img = Image.open(img_path).convert('RGB')
-    encoded = Image.open(encoded_path)
-    # encode(msg, img, n).save(encoded_path)
-    print(list_to_string(decode(encoded, 7, n)))
+    parser=argparse.ArgumentParser(description='Hiding in image with least significant bits')
+    parser.add_argument('Mode',
+                        metavar='mode',
+                        type=str,
+                        choices=['encode', 'decode'],
+                        help='encode or decode message into/from image')
+    parser.add_argument('input',
+                        metavar='input',
+                        type=str,
+                        help='message to hide or path to image for decoding')
+    parser.add_argument('-o', '--output',
+                        default='out.tiff',
+                        help='path to encoded image if encode')
+    parser.add_argument('-c', '--cover',
+                        type=str,
+                        help='cover image if encode (default is random image from unsplash)')
+    parser.add_argument('-r', '--resolution',
+                        type=str,
+                        default='800x800',
+                        help='resolution of the image if you pull it from unsplash (format: widthxheight')
+    parser.add_argument('-n', '--value',
+                        type=int,
+                        default='100',
+                        help='number of characters in encoded string, if wrong not entire message will be shown, or some unwanted characters will showup')
+
+    args = parser.parse_args()
+
+    if args.Mode == "encode":
+        if not args.cover:
+            response = requests.get(f'https://source.unsplash.com/random/{args.resolution}')
+            image_bytes = BytesIO(response.content)
+            img = Image.open(image_bytes).convert('RGB')
+        encode(args.input, img, n).save(args.output)
+    else:
+        encoded = Image.open(args.input)
+        print(list_to_string(decode(encoded, args.value, n)))
         

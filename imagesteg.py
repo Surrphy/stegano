@@ -78,7 +78,7 @@ def decode(img_encoded, n):
 if __name__ == '__main__':
     n = 2
 
-    parser = argparse.ArgumentParser(description='Hiding image in another image with most/least significatn bits')
+    parser = argparse.ArgumentParser(description='Hiding image in another image with most/least significant bits')
     parser.add_argument('Mode',
                         metavar='mode',
                         type=str,
@@ -94,14 +94,14 @@ if __name__ == '__main__':
                         help='path to output file (must be .tiff)')
     parser.add_argument('-c', '--cover',
                         type=str,
-                        help='cover image if encode (default is random image)')
+                        help='cover image if encode (default is random image from unsplash)')
 
     args = parser.parse_args()
 
     if args.Mode == 'encode':
         img_hide_path = args.input
         img_hide = Image.open(img_hide_path).convert('RGB')
-        img_cover = None
+        # img_cover = None
 
         if not args.cover:
             w, h = img_hide.size
