@@ -1,0 +1,1 @@
+Simple steganography program to hide image or text into pictures.

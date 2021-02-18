@@ -1,5 +1,5 @@
 import requests, argparse
-from modules import mk_img, rm_ls_bits, get_ls_bits, groups_of_n, to_binary, to_char, list_to_string
+from modules.defi import mk_img, rm_ls_bits, get_ls_bits, groups_of_n, to_binary, to_char, list_to_string
 from PIL import Image
 from io import BytesIO
 

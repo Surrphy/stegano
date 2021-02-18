@@ -1,4 +1,4 @@
-import requests, imagesteg, textsteg, argparse
+import requests, argparse, modules.imagesteg, modules.textsteg
 from io import BytesIO
 from PIL import Image
 
@@ -47,8 +47,8 @@ if __name__ == '__main__':
                 response = requests.get(f'https://source.unsplash.com/random/{w}x{h}')
                 image_bytes = BytesIO(response.content)
                 cover = Image.open(image_bytes).convert('RGB')
-                
-            imagesteg.encode(img, cover, n).save(args.output)
+
+            modules.imagesteg.encode(img, cover, n).save(args.output)
         else:
 
             if not args.cover:
@@ -58,11 +58,11 @@ if __name__ == '__main__':
             else:
                 cover = Image.open(args.cover)
 
-            textsteg.encode(args.input, cover, n).save(args.output)
+            modules.textsteg.encode(args.input, cover, n).save(args.output)
     else:
         ### decoding
         if args.Type == 'image':
-            imagesteg.decode(Image.open(args.input), n).save(args.output)
+            modules.imagesteg.decode(Image.open(args.input), n).save(args.output)
         else:
-            print(textsteg.decode(Image.open(args.input), args.length, n))
+            print(modules.textsteg.decode(Image.open(args.input), args.length, n))
 
