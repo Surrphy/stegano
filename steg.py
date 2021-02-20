@@ -10,7 +10,7 @@ if __name__ == '__main__':
                         metavar='mode',
                         type=str,
                         choices=['encode','decode'],
-                        help='decode or encode smt')
+                        help='decode or encode')
     parser.add_argument('Type',
                         metavar='type',
                         choices=['text', 'image'],
@@ -21,18 +21,18 @@ if __name__ == '__main__':
                         help='picture to decode/encode (image type) or text to encode/image to decode (text type)')
     parser.add_argument('-o', '--output',
                         default='out.tiff',
-                        help='path to encoded image if encode')
+                        help='path to output file (out.tiff default)')
     parser.add_argument('-c', '--cover',
                         type=str,
                         help='cover image if encode (default is random image from unsplash)')
     parser.add_argument('-r', '--resolution',
                         type=str,
                         default='800x800',
-                        help='resolution of the image if you pull it from unsplash (format: width/x/height')
+                        help='resolution of the image if you pull it from unsplash (format: /width/x/height/)')
     parser.add_argument('-l', '--length',
                         type=int,
                         default='100',
-                        help='number of characters in encoded string, if wrong not entire message will be shown, or some unwanted characters will showup')
+                        help='number of characters in encoded string, if wrong not entire message will be shown, or some unwanted characters will show')
 
     args = parser.parse_args()
 
